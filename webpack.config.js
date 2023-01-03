@@ -1,8 +1,13 @@
 const path = require("path");
 const HTMLWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+
+const mode = process.env.NODE_ENV === "production" ? "production" : "development";
 
 module.exports = {
-  mode: "development",
+  // "build": "webpack --mode production" // replaced in package.json
+  // mode: "development",
+  mode,
   // entry: path.resolve(__dirname, "src/index.jsx"),
   entry: {
     bundle: path.resolve(__dirname, "src/index.jsx"),
@@ -32,6 +37,7 @@ module.exports = {
       filename: "index.html",
       template: path.resolve(__dirname, "src/index.html"),
     }),
+    new MiniCssExtractPlugin(),
   ],
   module: {
     rules: [
@@ -41,9 +47,10 @@ module.exports = {
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
-          options: {
-            presets: ["@babel/preset-env", "@babel/preset-react"],
-          },
+          // when options property is missing -> babel-loader uses configs defined in babel.config.js or .babelrc files
+          // options: {
+          //   presets: ["@babel/preset-env", "@babel/preset-react"],
+          // },
         },
       },
       // static assets loader (webpack built-in functionality)
@@ -51,6 +58,17 @@ module.exports = {
         test: /\.(png | jpg | jpeg | svg | gif)$/i,
         type: "asset/resource",
       },
+      // css loader
+      {
+        test: /\.(s?)css$/i,
+        // use: [MiniCssExtractPlugin.loader, "css-loader"], // here in webpack arrays read 'right' to 'left', so once css file is encountered css-loader is applied which is followed by MiniCssExtractPlugin.loader
+        use: [
+          MiniCssExtractPlugin.loader,
+          "css-loader",
+          "postcss-loader",
+          "sass-loader",
+        ],
+      }
     ],
   },
 };
