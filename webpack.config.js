@@ -31,6 +31,10 @@ module.exports = {
     hot: true,
     historyApiFallback: true,
   },
+  // needs to be here if you wanna import components without .jsx extension (by default only .js is supported)
+  resolve: {
+    extensions: [".js", ".jsx"],
+  },
   plugins: [
     new HTMLWebpackPlugin({
       title: "Webpack",
