@@ -1,6 +1,7 @@
 const path = require("path");
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+// const MiniSVGDataURI = require('mini-svg-data-uri');
 
 const mode = process.env.NODE_ENV === "production" ? "production" : "development";
 
@@ -18,7 +19,8 @@ module.exports = {
     // filename: "[name].js", // dynamic filename based on entry name
     filename: "[name].[contenthash].js", // caching
     clean: true, // deletes dist folder on each yarn build !!!yarn start runs files from the memory and not the dist folder
-    assetModuleFilename: "[name][ext]", // goes with asset/resource and ensures that static filenames are not changed by webpack automatically
+    // assetModuleFilename: "images/[name][ext]", // goes with asset/resource and ensures that static filenames are not changed by webpack automatically
+    assetModuleFilename: "images/[hash][ext]", // hash instead of name for caching
   },
   devtool: "source-map",
   // "start": "webpack-dev-server --mode development --open --hot", // devServer entry configures everything instead of package.json
@@ -57,10 +59,27 @@ module.exports = {
           // },
         },
       },
-      // static assets loader (webpack built-in functionality)
+      // static assets loader (webpack built-in functionality from webpack 5)
       {
-        test: /\.(png | jpg | jpeg | svg | gif)$/i,
-        type: "asset/resource",
+        test: /\.(png|jpg|jpeg|svg|gif)$/i, // when there are spaces between |, it functionality does not work properly!
+        // asset/resource - outputs images into separate files
+        // type: "asset/resource",
+        // asset/inline - outputs images into js files
+        // type: "asset/inline",
+        // generator: {
+        //   dataUrl: content => {
+        //     content = content.toString();
+        //     return MiniSVGDataURI(content);
+        //   }
+        // },
+        // asset - webpack decides based on asset size whether it should be inline or in image directory
+        type: "asset",
+        // manipulate file max size --> default is 8 kB
+        // parser: {
+        //   dataUrlCondition: {
+        //     maxSize: 40 * 1024,
+        //   },
+        // },
       },
       // css loader
       {
