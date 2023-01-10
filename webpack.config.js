@@ -2,6 +2,7 @@ const path = require("path");
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 // const MiniSVGDataURI = require('mini-svg-data-uri');
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 
 const mode = process.env.NODE_ENV === "production" ? "production" : "development";
 
@@ -44,6 +45,9 @@ module.exports = {
       template: path.resolve(__dirname, "src/index.html"),
     }),
     new MiniCssExtractPlugin(),
+    new BundleAnalyzerPlugin({
+      analyzerMode: process.env.NODE_ENV === "production" ? "disabled" : "server",
+    }),
   ],
   module: {
     rules: [
